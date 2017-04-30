@@ -9,6 +9,7 @@ namespace TrainSolution3
     class Program
     {
         private static HangmanService hangmanService;
+        
 
         static void Main(string[] args)
         {
@@ -16,38 +17,86 @@ namespace TrainSolution3
             hangmanService.Restart();
 
             Boolean play = true;
+            int congratulation = 0;
 
             while (play)
             {
                 Console.Write("please enter character : ");
-                char d = Char.Parse(Console.ReadLine());
-
-                Console.WriteLine("Enum : " + hangmanService.Input(d));
-
-                int something = (int)hangmanService.Input(d);
-
-                if ((int)hangmanService.Input(d) == 0)
+                try
                 {
-                    hangmanService.GetDisplay();
-                }
-                else if ((int)hangmanService.Input(d) == 1)
-                {
-                    Console.WriteLine("Sorry, you ’re wrong. Remaining ... " + hangmanService.GetRemainingTry() + " time");
+                    char d = Char.Parse(Console.ReadLine());
+                    int resultInput = (int)hangmanService.Input(d);
 
-                    if(hangmanService.GetRemainingTry() == 0)
-                    {
-                        play = false;
-                        Console.WriteLine("GAME OVER");
+                    if (resultInput == 0)
+                    {//ตรง
+                        String resultDisplay = hangmanService.GetDisplay();
+                        Console.WriteLine(resultDisplay);
+                        
+                        congratulation++;
+                        //Console.WriteLine("congratulation : " + congratulation);
+                        //Console.WriteLine("resultDisplay.Length/2 : " + resultDisplay.Length / 2);
+                        
+                        if (congratulation == (resultDisplay.Length/2)) //length มันมีเว้นวรรคติดมาด้วยเลยต้องหาร 2 *มีปัญหา n ไป2ครั้ง
+                        {//ชนะs
+                            Console.WriteLine("\nCongratulation, you’re win.");
+                            Console.WriteLine("please enter any key...");
+                            Console.ReadLine();
+                            play = false;
+                        }
+
+                        /*
+                        Console.WriteLine("resultDisplay.Length : " + resultDisplay.Length);
+                        int j = 0;
+                        for (int i = 0; i < resultDisplay.Length; i++)
+                        {
+                            //Console.WriteLine("i : " + i);
+                            if (resultDisplay[i].Equals("_ "))
+                            {
+                                Console.WriteLine(resultDisplay[i]);
+
+
+                                //Console.WriteLine("!resultDisplay[i].Equals() : " + !resultDisplay[i].Equals("_"));
+                                j++;
+                            }
+
+                            if (j == resultDisplay.Length)
+                            {
+                                Console.WriteLine("Congratulation, you’re win.");
+                                //play = false;
+                            }
+
+                        }
+                        */
+
+
+
                     }
-                   
+                    else if (resultInput == 1)
+                    {//ไม่ตรง
+                        Console.WriteLine("Sorry, you ’re wrong. Remaining ... " + hangmanService.GetRemainingTry() + " time");
 
+                        if (hangmanService.GetRemainingTry() == 0)
+                        {//ชีวิตหมด แพ้
+                            play = false;
+                            Console.WriteLine("GAME OVER");
+                        }
+                    }
+                    else
+                    {//ซ้ำ
+                        Console.WriteLine("you have already tried this character.");
+                    }
+
+                    //Console.ReadLine();}
                 }
-                else
+                catch (ArgumentNullException ane)
                 {
-                    Console.WriteLine("you have already tried this character.");
+                    Console.Write("Null");
                 }
-
-                //Console.ReadLine();
+                catch (System.FormatException)
+                {
+                    Console.WriteLine("\nRestart");
+                    hangmanService.Restart();
+                }
             }
         }
 
@@ -58,8 +107,11 @@ namespace TrainSolution3
         private char[] selectWord;
         private Random random;
         List<Char> showUnder = new List<Char>();
-        enum Status { Correct = 0, Incorrect = 1, again = 2 };
-        int amountleft = 10;
+
+
+        int amountleft;
+
+        public enum Status { Correct = 0, Incorrect = 1, again = 2 };
 
         public HangmanService()
         {
@@ -69,6 +121,11 @@ namespace TrainSolution3
 
         public void Restart()
         {
+            //clear ค่าเก่า
+            showUnder.Clear();
+            amountleft = 10;
+
+
             int valueRandom = random.Next(0, word.Length);
             selectWord = word[valueRandom].ToCharArray();
 
@@ -117,7 +174,6 @@ namespace TrainSolution3
                 if (selectWord[i] == s)
                 {
                     showUnder[i] = selectWord[i];
-
                     switchS = 0;
                 }
             }
