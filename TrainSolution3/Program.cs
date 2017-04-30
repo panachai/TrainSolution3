@@ -31,18 +31,29 @@ namespace TrainSolution3
                     {//ตรง
                         String resultDisplay = hangmanService.GetDisplay();
                         Console.WriteLine(resultDisplay);
-                        
+
+
+                        if (hangmanService.getCount() == (resultDisplay.Length / 2))
+                        {
+                            Console.WriteLine("\nCongratulation, you’re win.");
+                            Console.WriteLine("please enter any key...");
+                            Console.ReadLine();
+                            play = false;
+                        }
+
+                        /*
                         congratulation++;
                         //Console.WriteLine("congratulation : " + congratulation);
                         //Console.WriteLine("resultDisplay.Length/2 : " + resultDisplay.Length / 2);
                         
-                        if (congratulation == (resultDisplay.Length/2)) //length มันมีเว้นวรรคติดมาด้วยเลยต้องหาร 2 *มีปัญหา n ไป2ครั้ง
+                        if (congratulation == (resultDisplay.Length/2)) //length มันมีเว้นวรรคติดมาด้วยเลยต้องหาร 2 [*มีปัญหา n ไป2ครั้ง]
                         {//ชนะs
                             Console.WriteLine("\nCongratulation, you’re win.");
                             Console.WriteLine("please enter any key...");
                             Console.ReadLine();
                             play = false;
                         }
+                        */
 
                         /*
                         Console.WriteLine("resultDisplay.Length : " + resultDisplay.Length);
@@ -107,11 +118,18 @@ namespace TrainSolution3
         private char[] selectWord;
         private Random random;
         List<Char> showUnder = new List<Char>();
+        private int count=0;//ใช้ check จำนวนรอที่ทำถูกแล้ว
 
 
         int amountleft;
 
         public enum Status { Correct = 0, Incorrect = 1, again = 2 };
+
+        //ใช้ check จำนวนรอที่ทำถูกแล้ว
+        public int getCount()
+        {
+            return count;
+        }
 
         public HangmanService()
         {
@@ -175,6 +193,7 @@ namespace TrainSolution3
                 {
                     showUnder[i] = selectWord[i];
                     switchS = 0;
+                    count++;
                 }
             }
             //statusEnum = Status.Incorrect;
